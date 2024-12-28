@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,body,#root {
+  height: 100%;
+  margin: 0;
+  background-color: #f3f5f9;
+}
+
+.paper-card-shadow { 
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .1), 0 6px 8px 0 rgba(0, 0, 0, .08);
+}
+
+.ban-bg-red {
+  background-image:
+    radial-gradient(#ff0000 14%, transparent 0);
+  background-size: 10px 10px;
+}
+.ban-bg-black {
+  background-image:
+    radial-gradient(#000 14%, transparent 0);
+  background-size: 10px 10px;
+}
+.fake-border {
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 1);
+}
