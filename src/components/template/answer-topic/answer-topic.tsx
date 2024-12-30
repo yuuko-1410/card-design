@@ -2,94 +2,76 @@ import { Resizable } from "re-resizable";
 import { useEffect, useState } from "react";
 import { useSize } from "ahooks";
 import { getNumberLabel } from "../../../utils/page";
-import useLayoutStore from "../../../store/layout";
-import { combinedPrevWithId, render } from "../../../utils/render";
-interface SingleBoxProps {
-  id: string;
-  title?: string;
-  no: number;
-  startQno: number;
-  number: number;
-  scores?: number[];
-  heights?: number[];
-  pageNum?: number;
-  columNum?: number;
-}
+import { usePageStore } from "../../../store/page";
+import { render } from "../../../utils/processor";
+import { Segment } from "../../../types/page";
 
 const AnswerTopic = ({
   id,
   title,
   no,
-  startQno,
-  number,
-  scores = [],
-  heights = [],
-}: SingleBoxProps) => {
-  const { changeSubBlockHeight, changeRealBlockHeight } = useLayoutStore();
+  score,
+  height,
+  blocks,
+  is_paging,
+}: Segment) => {
+  const { changeSegmentHeight, changeBlockHeight } = usePageStore();
   const [showImg, setShowImg] = useState(false);
   const [startY, setStartY] = useState(0);
-  const [shouldCombined, setShouldCombined] = useState(false);
-  const [isChangeSize, setIsChangeSize] = useState(false);
+  // const [shouldCombined, setShouldCombined] = useState(false);
+  // const [isChangeSize, setIsChangeSize] = useState(false);
   const onClick = () => {
     console.log("点击了");
     setShowImg(!showImg);
   };
   const size = useSize(document.getElementById(`#answer-topic-block-${id}`));
-  // 获取上方元素
-  const block = document.getElementById(`#answer-topic-block-${id}`);
-  const prev = block?.previousElementSibling;
-  const prevId = prev?.id;
+  // // 获取上方元素
+  // const block = document.getElementById(`#answer-topic-block-${id}`);
+  // const prev = block?.previousElementSibling;
+  // const prevId = prev?.id;
 
   useEffect(() => {
-    if (!size?.height) return;
-    changeRealBlockHeight(id, size?.height ?? 0);
-    // console.log(`变化了`, size?.height);
-    if (!isChangeSize) {
-      // render();
+    if (size?.height) {
+      changeSegmentHeight(id, size?.height ?? 0);
     }
-    
-    if (prevId?.includes("#answer-topic") && title == undefined) {
-      combinedPrevWithId(id);
-      setShouldCombined(true);
-    } else {
-      setShouldCombined(false);
-    }
-  }, [size?.height, prevId]);
+  }, [size?.height]);
+
   return (
     <div id={`#answer-topic-block-${id}`}>
-      {title == null ? (
+      {is_paging ? (
         <></>
       ) : (
         <div className="h-8 flex items-center">
           <label>
-            {getNumberLabel(no)}、{title}({scores.reduce((a, b) => a + b, 0)}分)
+            {getNumberLabel(no)}、{title}({score}分)
           </label>
         </div>
       )}
       <div className={`flex flex-col last:border-black last:border-b`}>
-        {Array.from({ length: number }).map((_, i) => (
+        {blocks.map((block, i) => (
           <Resizable
             key={i}
-            defaultSize={{ width: "100%", height: `${heights[i] ?? 200}px` }}
+            defaultSize={{ width: "100%", height: `${block.height ?? 200}px` }}
             onResizeStop={(e) => {
-              setIsChangeSize(false);
+              // setIsChangeSize(false);
               // @ts-expect-error 此处一切正常
-              changeSubBlockHeight(id, i, heights[i] + e.clientY - startY);
+              changeBlockHeight(block.id, block.height + e.clientY - startY);
+              // changeSubBlockHeight(id, i, block.height + e.clientY - startY);
               render();
             }}
             onResizeStart={(e) => {
-              setIsChangeSize(true);
+              // setIsChangeSize(true);
               // @ts-expect-error 此处一切正常
               setStartY(e.clientY ?? 0);
             }}
             enable={{ bottom: true }}
-            size={{ height: heights[i] ?? 200 }}
+            size={{ height: block.height ?? 200 }}
             className={`border-t border-x border-black font-mono p-4 flex flex-col gap-4`}
             // className={`${
             //   showTopBorder && i == 0 ? "" : "first:border-t"
             // } border-x border-b border-black font-mono p-4 flex flex-col gap-4`}
           >
-            <label onClick={onClick}>{startQno + i}.</label>
+            <label onClick={onClick}>{block.qno}.</label>
 
             {showImg ? (
               <Resizable defaultSize={{ width: "80px", height: "80px" }}>

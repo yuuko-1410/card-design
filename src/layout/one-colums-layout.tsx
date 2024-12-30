@@ -1,7 +1,7 @@
 import { createUseStyles } from "react-jss";
-import { LayoutColumn } from "../types/layout";
+import { Column } from "../types/page";
 import Render from "../components/render";
-const OneColumsLayout = ({ colums }: { colums: LayoutColumn[] }) => {
+const OneColumsLayout = ({ colums }: { colums: Column[] }) => {
   const style = usePageStyle();
   const [colum1] = colums;
   return (

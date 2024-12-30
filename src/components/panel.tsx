@@ -1,22 +1,26 @@
 import { useEffect, useRef } from "react";
-import useLayoutStore from "../store/layout";
-import { getPageSize } from "../utils/page";
+// import useLayoutStore from "../store/layout";
+import { usePageStore } from "../store/page.ts";
+import { getPageSize, arrGroups } from "../utils/page";
 import { useSize } from "ahooks";
 import { EventEnum, EventType } from "../types/event";
 import { EventEmitter } from "ahooks/lib/useEventEmitter";
 import PageLayout from "../layout/page-layout";
-import { initRender } from "../utils/render.ts";
 import * as htmlToImage from "html-to-image";
+import { initPageData } from "../render/index.ts";
 
 export default function Panel({ bus }: { bus: EventEmitter<EventType> }) {
-  const { config, pages } = useLayoutStore();
-  const { paperSpec } = config;
-  const [width, height] = getPageSize(paperSpec);
+  // const { config, pages } = useLayoutStore();
+  const { config, columns } = usePageStore();
+  const { column_num } = config;
+  const [width, height] = getPageSize(column_num);
   const sizeRef = useRef(null);
   const size = useSize(sizeRef);
+  const pages = arrGroups(columns, column_num);
 
   useEffect(() => {
-    initRender();
+    initPageData();
+    // initRender();
   }, []);
 
   bus.useSubscription((type) => {
@@ -45,13 +49,13 @@ export default function Panel({ bus }: { bus: EventEmitter<EventType> }) {
         alignItems: "center",
       }}
     >
-      {pages.map((page) => (
+      {pages.map((columns, i) => (
         <div
           className="page-content paper-card-shadow bg-white"
           style={{ width, height }}
-          key={page.pageNum}
+          key={i}
         >
-          <PageLayout colums={page.colums} />
+          <PageLayout colums={columns} />
         </div>
       ))}
     </div>
