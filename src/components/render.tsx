@@ -38,12 +38,12 @@ const selectBlock = (segment: Segment): JSX.Element => {
       return <AnswerTopic {...segment} key={segment.id} />;
     case "writing-cn":
       return <WritingCN {...segment} key={segment.id} />;
-    // case "writing-en":
-    //   return <WritingEN {...ele} key={ele.id} />;
-    // case "ban":
-    //   return <Ban {...ele} key={ele.id} />;
-    // case "option-box":
-    //   return <OptionTopic {...ele} key={ele.id} />;
+    case "writing-en":
+      return <WritingEN {...segment} key={segment.id} />;
+    case "ban":
+      return <Ban {...segment} key={segment.id} />;
+    case "option-box":
+      return <OptionTopic {...segment} key={segment.id} />;
     default:
       return (
         <div

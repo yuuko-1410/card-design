@@ -111,9 +111,7 @@ const usePageStore = create<Page & PageStoreAction>((set, get) => ({
       }))
     }))
   },
-
 }));
-
 
 export {
   usePageStore

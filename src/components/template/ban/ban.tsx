@@ -1,28 +1,26 @@
 import { useEffect, useState } from "react";
-import useLayoutStore from "../../../store/layout";
+import { usePageStore } from "../../../store/page";
 import { Resizable } from "re-resizable";
 import { useSize } from "ahooks";
 import { render } from "../../../utils/render";
+import { Segment } from "../../../types/page";
 
-interface BanProps {
-  id: string;
-  height?: number;
-}
 /**
  * 非作答区域
  * @param param0 占用空间高度值px
  * @returns
  */
-const Ban = ({ height = 200, id }: BanProps) => {
-  const { config, changeBlockHeight, changeRealBlockHeight } = useLayoutStore();
-  const { isRed } = config;
+const Ban = ({ height, id }: Segment) => {
+  const { config, changeSegmentHeight,changeBlockHeight } = usePageStore();
+  // const { config, changeBlockHeight, changeRealBlockHeight } = useLayoutStore();
+  const { is_red } = config;
   const [startClientY, setStartClientY] = useState(0);
   const [isChangeSize, setIsChangeSize] = useState(false);
 
   const size = useSize(document.getElementById(`#block-${id}`));
   useEffect(() => {
     if (size?.height) {
-      changeRealBlockHeight(id, size?.height ?? 0);
+      changeSegmentHeight(id, size?.height ?? 0);
       // console.log(`变化了`, size?.height);
       if (!isChangeSize) {
         // render();
@@ -50,7 +48,7 @@ const Ban = ({ height = 200, id }: BanProps) => {
           render();
         }}
         className={`border ${
-          isRed
+          is_red
             ? "border-[#ff0000] text-[#ff0000] ban-bg-red"
             : "border-black ban-bg-black"
         } flex justify-center items-center text-2xl`}

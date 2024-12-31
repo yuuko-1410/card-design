@@ -1,40 +1,40 @@
 import { Resizable } from "re-resizable";
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState, useRef } from "react";
 import { useSize } from "ahooks";
 import { getNumberLabel } from "../../../utils/page";
 import { usePageStore } from "../../../store/page";
 import { render } from "../../../utils/processor";
 import { Segment } from "../../../types/page";
 
-const AnswerTopic = ({
-  id,
-  title,
-  no,
-  score,
-  height,
-  blocks,
-  is_paging,
-}: Segment) => {
+const AnswerTopic = ({ id, title, no, score, blocks, is_paging }: Segment) => {
   const { changeSegmentHeight, changeBlockHeight } = usePageStore();
   const [showImg, setShowImg] = useState(false);
-  const [startY, setStartY] = useState(0);
-  // const [shouldCombined, setShouldCombined] = useState(false);
-  // const [isChangeSize, setIsChangeSize] = useState(false);
-  const onClick = () => {
-    console.log("点击了");
-    setShowImg(!showImg);
-  };
-  const size = useSize(document.getElementById(`#answer-topic-block-${id}`));
-  // // 获取上方元素
-  // const block = document.getElementById(`#answer-topic-block-${id}`);
-  // const prev = block?.previousElementSibling;
-  // const prevId = prev?.id;
+  const heightUpdateTimeoutRef = useRef<number | null>(null);
 
-  useEffect(() => {
-    if (size?.height) {
-      changeSegmentHeight(id, size?.height ?? 0);
+  const size = useSize(document.getElementById(`#answer-topic-block-${id}`));
+
+  useLayoutEffect(() => {
+    if (!size?.height) return;
+
+    // 清除之前的timeout
+    if (heightUpdateTimeoutRef.current) {
+      window.clearTimeout(heightUpdateTimeoutRef.current);
     }
-  }, [size?.height]);
+
+    // 设置新的timeout
+    heightUpdateTimeoutRef.current = window.setTimeout(() => {
+      changeSegmentHeight(id, size.height!);
+      render();
+      heightUpdateTimeoutRef.current = null;
+    }, 100);
+
+    // 清理函数
+    return () => {
+      if (heightUpdateTimeoutRef.current) {
+        window.clearTimeout(heightUpdateTimeoutRef.current);
+      }
+    };
+  }, [size?.height, id, changeSegmentHeight]);
 
   return (
     <div id={`#answer-topic-block-${id}`}>
@@ -52,27 +52,20 @@ const AnswerTopic = ({
           <Resizable
             key={i}
             defaultSize={{ width: "100%", height: `${block.height ?? 200}px` }}
-            onResizeStop={(e) => {
-              // setIsChangeSize(false);
-              // @ts-expect-error 此处一切正常
-              changeBlockHeight(block.id, block.height + e.clientY - startY);
-              // changeSubBlockHeight(id, i, block.height + e.clientY - startY);
-              render();
-            }}
-            onResizeStart={(e) => {
-              // setIsChangeSize(true);
-              // @ts-expect-error 此处一切正常
-              setStartY(e.clientY ?? 0);
+            onResizeStop={(e, direction, ref) => {
+              const newHeight = ref.offsetHeight;
+              changeBlockHeight(block.id, newHeight);
+              
+              // 使用 setTimeout 来延迟渲染
+              setTimeout(() => {
+                render();
+              }, 0);
             }}
             enable={{ bottom: true }}
             size={{ height: block.height ?? 200 }}
             className={`border-t border-x border-black font-mono p-4 flex flex-col gap-4`}
-            // className={`${
-            //   showTopBorder && i == 0 ? "" : "first:border-t"
-            // } border-x border-b border-black font-mono p-4 flex flex-col gap-4`}
           >
-            <label onClick={onClick}>{block.qno}.</label>
-
+            <label onClick={() => setShowImg(!showImg)}>{block.qno}.</label>
             {showImg ? (
               <Resizable defaultSize={{ width: "80px", height: "80px" }}>
                 <img

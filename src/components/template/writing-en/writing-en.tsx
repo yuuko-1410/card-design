@@ -1,36 +1,23 @@
 import { getNumberLabel } from "../../../utils/page";
 import { useSize } from "ahooks";
-import useLayoutStore from "../../../store/layout";
+import { usePageStore } from "../../../store/page";
 import { useEffect } from "react";
-import { render } from "../../../utils/render";
+import { Segment } from "../../../types/page";
 
-interface WritingENProps {
-  id: string;
-  title?: string;
-  no: number;
-  startQno: number;
-  score?: number;
-  maxLine?: number;
-}
-const WritingEN = ({
-  id,
-  title,
-  no,
-  startQno,
-  score = 0,
-  maxLine = 10,
-}: WritingENProps) => {
-  const { changeRealBlockHeight } = useLayoutStore();
+const WritingEN = ({ id, title, no, score, lines }: Segment) => {
+  // const { changeRealBlockHeight } = useLayoutStore();
+  const { changeSegmentHeight } = usePageStore();
   const size = useSize(document.getElementById(`#block-${id}`));
   // console.log(`id: ${id}`, size);
 
   useEffect(() => {
     if (size?.height) {
-      changeRealBlockHeight(id, size?.height ?? 0);
+      changeSegmentHeight(id, size?.height ?? 0);
+      // changeRealBlockHeight(id, size?.height ?? 0);
       // console.log(`变化了`, size?.height);
       // render();
     }
-  }, [id, size?.height, changeRealBlockHeight]);
+  }, [size?.height]);
   return (
     <div className="flex flex-col" id={`#block-${id}`}>
       <div>
@@ -45,7 +32,7 @@ const WritingEN = ({
         )}
       </div>
       <div className="border border-black px-2 pb-2">
-        {Array.from({ length: maxLine }).map((_, i) => (
+        {Array.from({ length: lines }).map((_, i) => (
           <div className="w-full h-8 border-b border-black" key={i}></div>
         ))}
       </div>
