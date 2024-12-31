@@ -1,45 +1,28 @@
-import { getNumberLabel, numberGroups } from "../../../utils/page";
+import { getNumberLabel, arrGroups } from "../../../utils/page";
 import SingleBoxOption from "./components/option";
-import useLayoutStore from "../../../store/layout";
 import { useSize } from "ahooks";
 import { useEffect } from "react";
-import { render } from "../../../utils/render";
+import { Segment } from "../../../types/page";
+import { usePageStore } from "../../../store/page";
 
-interface SingleBoxProps {
-  id: string;
-  title?: string;
-  no: number;
-  type?: "single" | "multiple" | "judge" | string;
-  startQno: number;
-  number: number;
-  scores?: number[];
-  optionsNums?: number[];
-}
-
-const SingleBox = ({
-  id,
-  title,
-  no,
-  type = "single",
-  startQno,
-  number,
-  scores = [],
-  optionsNums,
-}: SingleBoxProps) => {
-  const { changeRealBlockHeight } = useLayoutStore();
+const SingleBox = ({ id, title, no, score, blocks }: Segment) => {
+  const { changeSegmentHeight, syncSegmentHeight, columns } = usePageStore();
   // 定义 chunk 方法
-  const groups = numberGroups(startQno, number);
+  // const groups = numberGroups(startQno, number);
+  const groups = arrGroups(blocks, 5);
 
   const size = useSize(document.getElementById(`#block-${id}`));
   // console.log(`id: ${id}`, size);
 
   useEffect(() => {
     if (size?.height) {
-      changeRealBlockHeight(id, size?.height ?? 0);
+      changeSegmentHeight(id, size?.height ?? 0);
+      syncSegmentHeight();
+      console.log(columns);
       // console.log(`变化了`, size?.height);
       // render();
     }
-  }, [id, size?.height, changeRealBlockHeight]);
+  }, [size?.height]);
   return (
     <div id={`#block-${id}`}>
       {title == null ? (
@@ -47,21 +30,18 @@ const SingleBox = ({
       ) : (
         <div className="h-8 flex items-center">
           <label>
-            {getNumberLabel(no)}、{title}({scores.reduce((a, b) => a + b, 0)}分)
+            {getNumberLabel(no)}、{title}({score}分)
           </label>
         </div>
       )}
       <div className="w-full flex flex-wrap gap-x-10 gap-y-4 after:m-auto">
         {groups.map((group, i) => (
           <div className="" key={i}>
-            {group.map((qno, j) => (
+            {group.map((block, j) => (
               <SingleBoxOption
-                qno={qno}
+                qno={block.qno}
                 key={j}
-                optionNum={
-                  optionsNums == undefined ? 4 : optionsNums[5 * i + j - 1] ?? 4
-                }
-                type={type ?? "single"}
+                optionNum={block.option_num}
               />
             ))}
           </div>

@@ -1,0 +1,257 @@
+[
+  {
+    "type": "single-box",
+    "no": 1,
+    "height": 0,
+    "title": "选择题",
+    "desc": null,
+    "score": 50,
+    "is_paging": false,
+    "prev_nums": 0,
+    "rows": 0,
+    "lines": 0,
+    "blocks": [
+      {
+        "qno": 1,
+        "score": 5,
+        "height": 0,
+        "option_num": 4,
+        "lines": 0,
+        "rows": 0
+      },
+      {
+        "qno": 2,
+        "score": 5,
+        "height": 0,
+        "option_num": 4,
+        "lines": 0,
+        "rows": 0
+      },
+      {
+        "qno": 3,
+        "score": 5,
+        "height": 0,
+        "option_num": 4,
+        "lines": 0,
+        "rows": 0
+      },
+      {
+        "qno": 4,
+        "score": 5,
+        "height": 0,
+        "option_num": 4,
+        "lines": 0,
+        "rows": 0
+      },
+      {
+        "qno": 5,
+        "score": 5,
+        "height": 0,
+        "option_num": 4,
+        "lines": 0,
+        "rows": 0
+      },
+      {
+        "qno": 6,
+        "score": 5,
+        "height": 0,
+        "option_num": 7,
+        "lines": 0,
+        "rows": 0
+      },
+      {
+        "qno": 7,
+        "score": 5,
+        "height": 0,
+        "option_num": 7,
+        "lines": 0,
+        "rows": 0
+      },
+      {
+        "qno": 8,
+        "score": 5,
+        "height": 0,
+        "option_num": 7,
+        "lines": 0,
+        "rows": 0
+      },
+      {
+        "qno": 9,
+        "score": 5,
+        "height": 0,
+        "option_num": 7,
+        "lines": 0,
+        "rows": 0
+      },
+      {
+        "qno": 10,
+        "score": 5,
+        "height": 0,
+        "option_num": 7,
+        "lines": 0,
+        "rows": 0
+      }
+    ]
+  },
+  {
+    "type": "fill",
+    "no": 2,
+    "height": 0,
+    "title": "填空题",
+    "desc": null,
+    "score": 25,
+    "is_paging": false,
+    "prev_nums": 0,
+    "rows": 0,
+    "lines": 0,
+    "blocks": [
+      {
+        "qno": 11,
+        "score": 5,
+        "height": 0,
+        "option_num": 0,
+        "lines": 5,
+        "rows": 0
+      },
+      {
+        "qno": 12,
+        "score": 5,
+        "height": 0,
+        "option_num": 0,
+        "lines": 5,
+        "rows": 0
+      },
+      {
+        "qno": 13,
+        "score": 5,
+        "height": 0,
+        "option_num": 0,
+        "lines": 5,
+        "rows": 0
+      },
+      {
+        "qno": 14,
+        "score": 5,
+        "height": 0,
+        "option_num": 0,
+        "lines": 5,
+        "rows": 0
+      },
+      {
+        "qno": 15,
+        "score": 5,
+        "height": 0,
+        "option_num": 0,
+        "lines": 5,
+        "rows": 0
+      }
+    ]
+  },
+  {
+    "type": "answer-topic",
+    "no": 3,
+    "height": 0,
+    "title": "解答题",
+    "desc": null,
+    "score": 15,
+    "is_paging": false,
+    "prev_nums": 0,
+    "rows": 0,
+    "lines": 0,
+    "blocks": [
+      {
+        "qno": 16,
+        "score": 5,
+        "height": 200,
+        "option_num": 0,
+        "lines": 0,
+        "rows": 0
+      },
+      {
+        "qno": 17,
+        "score": 5,
+        "height": 200,
+        "option_num": 0,
+        "lines": 0,
+        "rows": 0
+      },
+      {
+        "qno": 18,
+        "score": 5,
+        "height": 200,
+        "option_num": 0,
+        "lines": 0,
+        "rows": 0
+      }
+    ]
+  },
+  {
+    "type": "writing-cn",
+    "no": 4,
+    "height": 0,
+    "title": "作文题",
+    "desc": null,
+    "score": 20,
+    "is_paging": false,
+    "prev_nums": 0,
+    "rows": 40,
+    "lines": 0,
+    "blocks": []
+  },
+  {
+    "type": "writing-en",
+    "no": 5,
+    "height": 0,
+    "title": "英语作文",
+    "desc": null,
+    "score": 20,
+    "is_paging": false,
+    "prev_nums": 0,
+    "rows": 0,
+    "lines": 10,
+    "blocks": []
+  },
+  {
+    "type": "option-box",
+    "no": 6,
+    "height": 20,
+    "title": "选做题",
+    "desc": "请考生用2B铅笔将所选题目对应题号涂黑，答题区域只允许选择一题，多涂、错涂漏涂均不给分，如果多做，则按所选做的前一题计分。",
+    "score": 20,
+    "is_paging": false,
+    "prev_nums": 0,
+    "rows": 0,
+    "lines": 10,
+    "blocks": [
+      {
+        "qno": 21,
+        "score": 5,
+        "height": 0,
+        "option_num": 0,
+        "lines": 0,
+        "rows": 0
+      },
+      {
+        "qno": 22,
+        "score": 5,
+        "height": 0,
+        "option_num": 0,
+        "lines": 0,
+        "rows": 0
+      }
+    ]
+  },
+  {
+    "type": "ban",
+    "no": 1001,
+    "height": 240,
+    "title": "非作答区",
+    "desc": null,
+    "score": 0,
+    "is_paging": false,
+    "prev_nums": 0,
+    "rows": 0,
+    "lines": 0,
+    "blocks": []
+  }
+]

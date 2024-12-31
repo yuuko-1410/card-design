@@ -1,105 +1,103 @@
 import { Resizable } from "re-resizable";
-import { useEffect, useState } from "react";
-import { getNumberLabel } from "../../../utils/page";
-import useLayoutStore from "../../../store/layout";
+import { useEffect, useRef } from "react";
 import { useSize } from "ahooks";
-import { render } from "../../../utils/render";
+import { getNumberLabel } from "../../../utils/page";
+import { usePageStore } from "../../../store/page";
+import { render } from "../../../utils/processor";
+import { Segment } from "../../../types/page";
 
-interface OptionTopicProps {
-  id: string;
-  title?: string;
-  no: number;
-  startQno: number;
-  score?: number;
-  number?: number;
-  height?: number;
-}
 const OptionTopic = ({
   id,
   title,
+  desc,
   no,
-  score = 0,
-  startQno,
-  number = 2,
-  height,
-}: OptionTopicProps) => {
-  const { changeBlockHeight, changeRealBlockHeight } = useLayoutStore();
-  const [showImg, setShowImg] = useState(false);
-  const [startY, setStartY] = useState(0);
-  const [isChangeSize, setIsChangeSize] = useState(false);
+  score,
+  blocks,
+  height: initialHeight,
+}: Segment) => {
+  const { changeSegmentHeight } = usePageStore();
+  const heightRef = useRef<number | null>(null);
+  const resizingRef = useRef(false);
+  const renderTimeoutRef = useRef<number | null>(null);
+  const titleRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
 
-  const onClick = () => {
-    console.log("点击了");
-    setShowImg(!showImg);
-  };
-  const label =
-    "请考生用2B铅笔将所选题目对应题号涂黑，答题区域只允许选择一题，多涂、错涂漏涂均不给分，如果多做，则按所选做的前一题计分。";
+  // 使用 useSize 获取实际高度
+  const titleSize = useSize(titleRef.current);
+  const contentSize = useSize(contentRef.current);
 
-  const size = useSize(document.getElementById(`#block-${id}`));
-  // console.log(`id: ${id}`, size);
+  // 使用 ref 保存的高度或初始高度
+  const currentHeight = heightRef.current || initialHeight || 200;
 
   useEffect(() => {
-    if (size?.height) {
-      changeRealBlockHeight(id, size?.height ?? 0);
-      // console.log(`变化了`, size?.height);
-      if (!isChangeSize) {
-        // render();
-      }
+    if (!titleSize?.height || !contentSize?.height || resizingRef.current) return;
+    
+    // 使用实际测量的高度
+    const actual_height = titleSize.height + contentSize.height;
+    if (!heightRef.current) {
+      changeSegmentHeight(id, actual_height);
+      render();
     }
-  }, [size?.height]);
+  }, [titleSize?.height, contentSize?.height, id]);
+
+  // 清理函数
+  useEffect(() => {
+    return () => {
+      if (renderTimeoutRef.current) {
+        window.clearTimeout(renderTimeoutRef.current);
+      }
+    };
+  }, []);
+
   return (
-    <div id={`#block-${id}`}>
-      <div>
+    <div id={`#option-box-block-${id}`}>
+      <div ref={titleRef}>
         {title == null ? (
           <></>
         ) : (
-          <div className="my-1 flex flex-col ">
+          <div className="my-1 flex flex-col">
             <label>
               {getNumberLabel(no)}、{title}({score}分)
             </label>
-            <div className="text-sm">({label})</div>
+            <div className="text-sm">({desc})</div>
           </div>
         )}
       </div>
       <Resizable
-        defaultSize={{ width: "100%", height: `${height}px` }}
-        size={{ height }}
+        defaultSize={{ width: "100%", height: `${currentHeight}px` }}
         enable={{ bottom: true }}
-        onResizeStart={(e) => {
-          setIsChangeSize(true);
-          // @ts-expect-error 此处一切正常
-          setStartY(e.clientY ?? 0);
+        onResizeStart={() => {
+          resizingRef.current = true;
         }}
-        onResizeStop={(e) => {
-          setIsChangeSize(false);
-          // @ts-expect-error 此处一切正常
-          changeBlockHeight(id, height + e.clientY - startY);
-          render();
+        onResize={() => {
+          if (renderTimeoutRef.current) {
+            window.clearTimeout(renderTimeoutRef.current);
+          }
+        }}
+        onResizeStop={(_e, _direction, ref) => {
+          resizingRef.current = false;
+          const newHeight = ref.offsetHeight;
+          heightRef.current = newHeight;
+          changeSegmentHeight(id, newHeight + (titleSize?.height || 0));
+          
+          renderTimeoutRef.current = window.setTimeout(() => {
+            render();
+            renderTimeoutRef.current = null;
+          }, 100);
         }}
         className="border border-black font-mono p-4 flex flex-col gap-4"
       >
-        <div className="flex items-center h-6 gap-2 text-xs" onClick={onClick}>
+        <div ref={contentRef} className="flex items-center h-6 gap-2 text-xs">
           <a>我选的题号</a>
-          {Array.from({ length: number }).map((_, i) => (
+          {blocks.map((block, i) => (
             <div
               key={i}
-              className="w-[24px] h-[12px] border border-black flex justify-center items-center"
+              className="w-[26px] h-[14px] border border-black flex justify-center items-center"
             >
-              {startQno + i}
+              {block.qno}
             </div>
           ))}
         </div>
-        {showImg ? (
-          <Resizable defaultSize={{ width: "80px", height: "80px" }}>
-            <img
-              src="http://42.193.105.175:9000/education/exam%2FexamInfoId-144%2Ftrim%2Fexam_number-0000000002%2F6-10.jpg"
-              width="100%"
-              height="100%"
-            />
-          </Resizable>
-        ) : (
-          <></>
-        )}
       </Resizable>
     </div>
   );

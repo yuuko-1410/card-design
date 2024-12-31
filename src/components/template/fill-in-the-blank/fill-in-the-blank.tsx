@@ -1,39 +1,19 @@
 import { getNumberLabel } from "../../../utils/page";
 import { useSize } from "ahooks";
-import useLayoutStore from "../../../store/layout";
+import { usePageStore } from "../../../store/page";
 import { useEffect } from "react";
-import { render } from "../../../utils/render";
+import { Segment } from "../../../types/page";
 
-interface FillInTheBlankProps {
-  id: string;
-  title?: string;
-  no: number;
-  startQno: number;
-  number: number;
-  scores?: number[];
-  lineSizes?: number[];
-}
-
-const FillInTheBlank = ({
-  id,
-  title,
-  no,
-  startQno,
-  number,
-  scores = [],
-  lineSizes = [],
-}: FillInTheBlankProps) => {
-  const {changeRealBlockHeight} = useLayoutStore();
-
+const FillInTheBlank = ({ id, title, no, score, blocks }: Segment) => {
+  const { changeSegmentHeight } = usePageStore();
   const size = useSize(document.getElementById(`#block-${id}`));
   useEffect(() => {
     if (size?.height) {
-      changeRealBlockHeight(id, size?.height ?? 0);
+      changeSegmentHeight(id, size?.height ?? 0);
       // console.log(`变化了`, size?.height);
       // render();
-
     }
-  }, [id, size?.height, changeRealBlockHeight]);
+  }, [size?.height]);
   return (
     <div id={`#block-${id}`}>
       {title == null ? (
@@ -41,15 +21,14 @@ const FillInTheBlank = ({
       ) : (
         <div className="h-8 flex items-center">
           <label>
-            {getNumberLabel(no)}、{title}({scores.reduce((a, b) => a + b, 0)}分)
+            {getNumberLabel(no)}、{title}({score}分)
           </label>
         </div>
       )}
       <div className="w-full border border-black p-4 font-mono flex flex-wrap gap-4">
-        {Array.from({ length: number }).map((_, index) => (
+        {blocks.map((block, index) => (
           <label key={index}>
-            {`${startQno + index}`.padStart(2, "0")}.{" "}
-            {"____".repeat(lineSizes[index] ?? 4)}
+            {`${block.qno}`.padStart(2, "0")}. {"____".repeat(block.lines ?? 4)}
           </label>
         ))}
       </div>

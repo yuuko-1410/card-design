@@ -1,24 +1,18 @@
 import { useEffect } from "react";
-import useLayoutStore from "../../store/layout";
+import { usePageStore } from "../../store/page";
 import { useSize } from "ahooks";
 const CardInfo = () => {
-  const { config, changePageInfo } = useLayoutStore();
-  const {
-    title,
-    precautions,
-    isIdentityCode,
-    isMutalVersion,
-    numberColNum,
-    isRed,
-  } = config;
+  const { config, title, changeHeaderHeight } = usePageStore();
+  const { is_red, is_ab, is_bar_code, number_digits, precautions } = config;
 
   const size = useSize(document.getElementById("#card-info"));
 
   useEffect(() => {
-    changePageInfo({
-      ...config,
-      realHeight: size?.height ?? 0,
-    });
+    changeHeaderHeight(size?.height ?? 0);
+    // changePageInfo({
+    //   ...config,
+    //   realHeight: size?.height ?? 0,
+    // });
     // console.log(`size`, config);
   }, [size?.height]);
   return (
@@ -33,20 +27,20 @@ const CardInfo = () => {
       {/* 注意事项区 */}
       <div
         className={`min-h-64 w-full border ${
-          isRed ? "border-[#ff0000]" : "border-[#000]"
+          is_red ? "border-[#ff0000]" : "border-[#000]"
         } flex text-[14px]`}
       >
         <div className="flex-1 flex flex-col">
           <div
             className={`border-b ${
-              isRed ? "border-[#ff0000]" : "border-[#000000]"
+              is_red ? "border-[#ff0000]" : "border-[#000000]"
             } w-full h-10 flex justify-center items-center`}
           >
             <p>注意事项</p>
           </div>
           <div
             className={`border-b ${
-              isRed
+              is_red
                 ? "border-[#ff0000] text-[#ff0000]"
                 : "border-[#000] text-[#000]"
             }  w-full flex-1 p-2 space-y-2`}
@@ -74,14 +68,14 @@ const CardInfo = () => {
         </div>
         <div
           className={`border-l ${
-            isRed ? "border-[#ff0000]" : "border-[#000]"
+            is_red ? "border-[#ff0000]" : "border-[#000]"
           } min-w-60 flex flex-col justify-center items-center`}
         >
-          {isIdentityCode ? (
+          {is_bar_code ? (
             <div className="flex-1 flex justify-center items-center">
               <div
                 className={`h-36 w-52 rounded-xl border border-dashed ${
-                  isRed ? "border-[#ff0000]" : "border-[#000]"
+                  is_red ? "border-[#ff0000]" : "border-[#000]"
                 } flex justify-center items-center`}
               >
                 <a>贴身份码区</a>
@@ -94,14 +88,14 @@ const CardInfo = () => {
                 <table cellPadding={0} cellSpacing={0}>
                   <tbody>
                     <tr>
-                      {Array.from({ length: numberColNum }).map((_num, i) => (
+                      {Array.from({ length: number_digits }).map((_num, i) => (
                         <th key={i}>
                           <div
                             style={{
                               borderLeftWidth: i === 0 ? 1 : 0,
                             }}
                             className={`h-6 w-6 border-y border-r ${
-                              isRed ? "border-[#ff0000]" : "border-[#000]"
+                              is_red ? "border-[#ff0000]" : "border-[#000]"
                             } mb-1`}
                           ></div>
                         </th>
@@ -109,9 +103,11 @@ const CardInfo = () => {
                     </tr>
                     {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
                       <tr className="text-xs font-mono text-center" key={num}>
-                        {Array.from({ length: numberColNum }).map((_num, i) => (
-                          <td key={i}>[ {num} ]</td>
-                        ))}
+                        {Array.from({ length: number_digits }).map(
+                          (_num, i) => (
+                            <td key={i}>[ {num} ]</td>
+                          )
+                        )}
                       </tr>
                     ))}
                   </tbody>
@@ -119,10 +115,10 @@ const CardInfo = () => {
               </div>
             </div>
           )}
-          {isMutalVersion ? (
+          {is_ab ? (
             <div
               className={`h-[33px] w-full border-t ${
-                isRed ? "border-[#ff0000]" : "border-[#000]"
+                is_red ? "border-[#ff0000]" : "border-[#000]"
               } text-[11px] flex px-2 items-center justify-center gap-4`}
             >
               <div className="flex items-center space-x-2">

@@ -1,53 +1,53 @@
 import { Radio, RadioChangeEvent, Button, InputNumber, Switch } from "antd";
+import { usePageStore } from "../store/page";
 import { useState } from "react";
-import { render } from "../utils/render";
 import { EventEnum, EventType } from "../types/event";
 import { EventEmitter } from "ahooks/lib/useEventEmitter";
-import useLayoutStore from "../store/layout";
+import { changeCNGridRows, render } from "../utils/processor";
 
 export default function Toolbar({ bus }: { bus: EventEmitter<EventType> }) {
-  const { config, changePageInfo } = useLayoutStore();
+  const { config, changeConfig } = usePageStore();
   const [pageType, setPageType] = useState(1);
 
   const onChange = (e: RadioChangeEvent) => {
     setPageType(e.target.value);
-    changePageInfo({
+    changeConfig({
       ...config,
-      paperSpec: e.target.value === 1 ? "A4" : "A3",
-      column: e.target.value,
+      column_num: e.target.value,
     });
+    changeCNGridRows(e.target.value);
     render();
   };
 
-  const updateNumberNum = (value: number | null) => {
-    changePageInfo({
+  const updateNumberNum = (number_digits: number | null) => {
+    changeConfig({
       ...config,
-      numberColNum: value ?? 10,
+      number_digits: number_digits ?? 10,
     });
     // 重新渲染
     render();
   };
 
-  const changeIdentityCode = (isIdentityCode: boolean) => {
-    changePageInfo({
+  const changeIdentityCode = (is_bar_code: boolean) => {
+    changeConfig({
       ...config,
-      isIdentityCode,
+      is_bar_code,
     });
     // 重新渲染
     render();
   };
-  const changeMutalVersion = (isMutalVersion: boolean) => {
-    changePageInfo({
+  const changeMutalVersion = (is_ab: boolean) => {
+    changeConfig({
       ...config,
-      isMutalVersion,
+      is_ab,
     });
     // 重新渲染
     render();
   };
-  const changeRed = (isRed: boolean) => {
-    changePageInfo({
+  const changeRed = (is_red: boolean) => {
+    changeConfig({
       ...config,
-      isRed,
+      is_red,
     });
     // 重新渲染
     render();
@@ -62,17 +62,17 @@ export default function Toolbar({ bus }: { bus: EventEmitter<EventType> }) {
       </Radio.Group>
       <div className="flex items-center gap-2">
         <p className="text-xs">条形码</p>
-        <Switch value={config.isIdentityCode} onChange={changeIdentityCode} />
+        <Switch value={config.is_bar_code} onChange={changeIdentityCode} />
         <InputNumber
           min={1}
           max={16}
-          value={config.numberColNum}
+          value={config.number_digits}
           onChange={updateNumberNum}
         />
         <p className="text-xs">AB卷</p>
-        <Switch value={config.isMutalVersion} onChange={changeMutalVersion} />
+        <Switch value={config.is_ab} onChange={changeMutalVersion} />
         <p className="text-xs">红色</p>
-        <Switch value={config.isRed} onChange={changeRed} />
+        <Switch value={config.is_red} onChange={changeRed} />
       </div>
       <Button
         type="primary"
